@@ -451,6 +451,7 @@ Hà An            </div>
           </form>
         </div>
       </div>
+      <div id="messageList"></div>
     </section>
     <!-- END TIN NHẮN -->
 <script>
@@ -692,5 +693,56 @@ $(document).ready(function(){
 <script src="https://amanweddingstudio.com/wp-includes/js/comment-reply.min.js?ver=6.8.3" id="comment-reply-js" async data-wp-strategy="async"></script>
     
 </body>
+
+<script type="module">
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyATLRrm0wcgX5ulgIqGf31U3ucqYmjd3XY",
+    authDomain: "dhn-prj.firebaseapp.com",
+    projectId: "dhn-prj",
+    storageBucket: "dhn-prj.firebasestorage.app",
+    messagingSenderId: "938914260024",
+    appId: "1:938914260024:web:c035845025f0ec11f732cd",
+    measurementId: "G-BFPS7RXN2B"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Handle submit
+  const form = document.getElementById("messageForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("m_name").value;
+    const text = document.getElementById("m_text").value;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        name: name,
+        text: text,
+        createdAt: Date.now()
+      });
+
+      alert("Gửi lời chúc thành công!");
+      form.reset();
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Có lỗi xảy ra.");
+    }
+  });
+</script>
+
+
+
+
+
 
 </html>
