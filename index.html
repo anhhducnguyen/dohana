@@ -423,12 +423,12 @@ Hà An            </div>
         <h2 class="section-title uk-light" style="color:white">
           Gửi lời chúc đến cặp đôi        </h2>
         <div class="list_message">
-          <!-- <div class="message-item" data-aos="fade-up" data-aos-duration="2000">
+          <div class="message-item" data-aos="fade-up" data-aos-duration="2000">
             <i class='bx bxs-quote-alt-left'></i>
             <h3 class="user_message">Phương Nguyễn</h3>
             <p class="message_body">Chúc bạn thân của tao lấy một chồng, đẻ hai con đủ nếp đủ tẻ, sống ở nhà ba tầng,
               mua xe 4 bánh nhé. Phải thật hạnh phúc mày nhé! Hi hi.</p>
-          </div> -->
+          </div>
         </div>
        
         <div class="uk-padding-small uk-border-rounded blur-bg" style="border:1px solid white">
@@ -451,7 +451,6 @@ Hà An            </div>
           </form>
         </div>
       </div>
-      <div id="messageList"></div>
     </section>
     <!-- END TIN NHẮN -->
 <script>
@@ -694,7 +693,7 @@ $(document).ready(function(){
     
 </body>
 
-<script type="module">
+<!-- <script type="module">
   // Firebase imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
@@ -738,7 +737,77 @@ $(document).ready(function(){
       alert("Có lỗi xảy ra.");
     }
   });
+</script> -->
+
+<script type="module">
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyATLRrm0wcgX5ulgIqGf31U3ucqYmjd3XY",
+    authDomain: "dhn-prj.firebaseapp.com",
+    projectId: "dhn-prj",
+    storageBucket: "dhn-prj.firebasestorage.app",
+    messagingSenderId: "938914260024",
+    appId: "1:938914260024:web:c035845025f0ec11f732cd",
+    measurementId: "G-BFPS7RXN2B"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.getElementById("messageForm");
+  const listContainer = document.querySelector(".list_message");
+
+  // Hàm hiển thị messages
+  async function renderMessages() {
+    listContainer.innerHTML = ""; // Xóa nội dung cũ
+
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const item = document.createElement("div");
+      item.classList.add("message-item");
+      item.innerHTML = `
+        <i class='bx bxs-quote-alt-left'></i>
+        <h3 class="user_message">${data.name}</h3>
+        <p class="message_body">${data.text}</p>
+      `;
+      listContainer.appendChild(item);
+    });
+  }
+
+  // Load messages khi mở trang
+  renderMessages();
+
+  // Handle submit form
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("m_name").value;
+    const text = document.getElementById("m_text").value;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        name: name,
+        text: text,
+        createdAt: Date.now()
+      });
+
+      form.reset();
+      renderMessages(); // Cập nhật hiển thị ngay
+      alert("Gửi lời chúc thành công!");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Có lỗi xảy ra.");
+    }
+  });
 </script>
+
 
 
 
