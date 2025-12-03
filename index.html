@@ -809,10 +809,42 @@ $(document).ready(function(){
   });
 </script>
 
+<script>
+const form = document.getElementById("form-wedding");
 
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  // Lấy dữ liệu từ form
+  const partyType = document.querySelector('input[name="fav_language"]:checked')?.value || "";
+  const name = document.getElementById("f_name").value;
+  const attend = document.getElementById("wedding-select").value;
+  const numPeople = document.getElementById("num_user").value;
+  const note = document.getElementById("f_text").value;
 
+  const payload = {
+    party_type: partyType,
+    name: name,
+    attend: attend,
+    num_people: numPeople,
+    note: note
+  };
 
+  try {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxMFjXWJjGpHAd3k5o5etSxyKFJAypv2x6dYXxcIdVpkKht_UGXPJ0abWu2UHr1NvGI3Q/exec", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/json" },
+      mode: 'no-cors' // bỏ lỗi CORS khi chạy trên domain khác
+    });
 
+    // Chú ý: mode: 'no-cors' không cho đọc response JSON
+    // alert("Xác nhận tham dự đã gửi thành công!");
+    form.reset();
 
+  } catch(err) {
+    alert("Có lỗi xảy ra: " + err);
+  }
+});
+</script>
 </html>
